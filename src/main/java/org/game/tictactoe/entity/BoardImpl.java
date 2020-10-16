@@ -2,6 +2,7 @@ package org.game.tictactoe.entity;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -22,6 +23,7 @@ public class BoardImpl implements Board {
 	}
 
 	public BoardImpl(Cell[][] cells) {
+		Objects.requireNonNull(cells);
 		assertEqualsRowsAndColumns(cells);
 		initCache();
 		this.board = cells;
@@ -29,9 +31,11 @@ public class BoardImpl implements Board {
 	}
 
 	public BoardImpl(Board board) {
+		Objects.requireNonNull(board, () -> "board can't be null");
 		initCache();
 		this.board = deepCloneCells(board.getBoard());
 		Coordinate bounds = board.getBounds();
+		Objects.requireNonNull(bounds, () -> "bounds can't be null");
 		this.bound = cache.get(bounds.getRowCoordinate(), bounds.getColumnCoordinate());
 	}
 
@@ -88,6 +92,8 @@ public class BoardImpl implements Board {
 
 	@Override
 	public void setCell(Cell cell, Coordinate coord) throws CoordinateOutOfBoundsException {
+		Objects.requireNonNull(cell, () -> "cell can't be null");
+		Objects.requireNonNull(coord, () -> "coord can't be null");
 		try {
 			board[coord.getRowCoordinate()][coord.getColumnCoordinate()] = cell;
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -97,6 +103,7 @@ public class BoardImpl implements Board {
 
 	@Override
 	public Cell getCell(Coordinate coord) throws CoordinateOutOfBoundsException {
+		Objects.requireNonNull(coord, () -> "coord can't be null");
 		try {
 			return board[coord.getRowCoordinate()][coord.getColumnCoordinate()];
 		} catch (ArrayIndexOutOfBoundsException e) {
