@@ -33,7 +33,7 @@ public class ConsoleApp {
 		System.out.println();
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				System.out.printf("At %d,%d\n", i + 1, j + 1);
+				System.out.printf("At %d,%d\n", i, j);
 				String choice = sc.next();
 				cells[i][j] = getCell(choice);
 			}
