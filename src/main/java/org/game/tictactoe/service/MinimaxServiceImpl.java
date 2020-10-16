@@ -84,7 +84,7 @@ public class MinimaxServiceImpl implements MinimaxService {
 		} else if (outcome == LOSE) {
 			return new ResultSet(-size + 1, LOSE, null);
 		} else if (size == 0) {
-			return new ResultSet(size, DRAW, null);
+			return new ResultSet(0, DRAW, null);
 		}
 		int score = getInitialScore.apply(player);
 		Coordinate bestMove = null;

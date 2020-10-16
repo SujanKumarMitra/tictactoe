@@ -15,13 +15,62 @@ public class BoardImpl implements Board {
 	private CoordinateCache cache;
 
 	public BoardImpl() {
-		board = new Cell[3][3];
-		cache = CoordinateCache.getInstance();
-		bound = cache.get(3, 3);
-		initBoard();
+		initCache();
+		this.board = createBoard(3);
+		fillBoard();
+		this.bound = cache.get(3, 3);
 	}
 
-	private void initBoard() {
+	public BoardImpl(Cell[][] cells) {
+		assertEqualsRowsAndColumns(cells);
+		initCache();
+		this.board = cells;
+		this.bound = cache.get(cells.length, cells[0].length);
+	}
+
+	public BoardImpl(Board board) {
+		initCache();
+		this.board = deepCloneCells(board.getBoard());
+		Coordinate bounds = board.getBounds();
+		this.bound = cache.get(bounds.getRowCoordinate(), bounds.getColumnCoordinate());
+	}
+
+	public BoardImpl(int boardSize) {
+		initCache();
+		this.board = createBoard(boardSize);
+		this.bound = cache.get(boardSize, boardSize);
+	}
+
+	private Cell[][] createBoard(int size) {
+		return new Cell[size][size];
+	}
+
+	private void initCache() {
+		this.cache = CoordinateCache.getInstance();
+	}
+
+	private Cell[][] deepCloneCells(Cell[][] cells) {
+		int rows = cells.length;
+		int cols = cells[0].length;
+		Cell[][] clones = new Cell[rows][cols];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				clones[i][j] = cells[i][j];
+			}
+		}
+		return clones;
+	}
+
+	private void assertEqualsRowsAndColumns(Cell[][] cells) {
+		int rows = cells.length;
+		for (int i = 0; i < rows; i++) {
+			if (cells[i].length != rows) {
+				throw new IllegalArgumentException("board should be square");
+			}
+		}
+	}
+
+	private void fillBoard() {
 		for (Cell[] row : board) {
 			Arrays.fill(row, Cell.EMPTY);
 		}
