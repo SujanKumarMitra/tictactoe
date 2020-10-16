@@ -1,5 +1,6 @@
 package org.game.tictactoe.service;
 
+import static org.game.tictactoe.entity.Cell.EMPTY;
 import static org.game.tictactoe.entity.Cell.O;
 import static org.game.tictactoe.entity.Cell.X;
 import static org.game.tictactoe.entity.Outcome.DRAW;
@@ -19,23 +20,40 @@ import org.game.tictactoe.entity.Outcome;
 import org.game.tictactoe.entity.Player;
 
 /**
+ * Implementation of {@link MinimaxService}
+ * 
  * @author Sujan Kumar Mitra
  * @since 2020-10-16
  */
 public class MinimaxServiceImpl implements MinimaxService {
 
+	/**
+	 * utility to calculate initial score based on current player
+	 */
 	Function<Player, Integer> getInitialScore;
 
+	/**
+	 * comparison logic or scores based on current player
+	 */
 	Function<Player, Comparator<Integer>> getComparator;
 
+	/**
+	 * utility to get appropriate move for current player
+	 */
 	Function<Player, Cell> getMoveForPlayer;
 
+	/**
+	 * utility to get opposite player of current player
+	 */
 	Function<Player, Player> getOppositePlayer;
 
 	public MinimaxServiceImpl() {
 		initLambdas();
 	}
 
+	/**
+	 * initializes the lambdas
+	 */
 	private void initLambdas() {
 		// @formatter:off
 		getInitialScore = player -> (player == MAX) ? 
@@ -56,7 +74,7 @@ public class MinimaxServiceImpl implements MinimaxService {
 			case MIN:
 				return O;
 			default:
-				return Cell.EMPTY;
+				return EMPTY;
 			}
 		};
 		
@@ -75,6 +93,15 @@ public class MinimaxServiceImpl implements MinimaxService {
 		return new ResultImpl(nextMove.outcome, nextMove.coordinate);
 	}
 
+	/**
+	 * Finds an optimal move based on the {@link Player} currently making a move and
+	 * the state of the {@link Board}.
+	 * 
+	 * @param board  the board
+	 * @param player the player
+	 * @return the result
+	 * @see ResultSet
+	 */
 	private ResultSet findMove(Board board, Player player) {
 		Outcome outcome = getOutcome(board);
 		Set<Coordinate> positions = board.getUnfilledPositions();
@@ -82,7 +109,7 @@ public class MinimaxServiceImpl implements MinimaxService {
 		if (outcome == WIN) {
 			return new ResultSet(size + 1, WIN, null);
 		} else if (outcome == LOSE) {
-			return new ResultSet(-size + 1, LOSE, null);
+			return new ResultSet(-size - 1, LOSE, null);
 		} else if (size == 0) {
 			return new ResultSet(0, DRAW, null);
 		}
@@ -104,6 +131,14 @@ public class MinimaxServiceImpl implements MinimaxService {
 		return new ResultSet(score, finalOutcome, bestMove);
 	}
 
+	/**
+	 * Checks whether the new move is better that previously chosen move
+	 * 
+	 * @param score  the current score
+	 * @param result the previous result
+	 * @param player the player making the move
+	 * @return if better then {@code true}, else {@code false}
+	 */
 	private boolean isBetterMove(Integer score, ResultSet result, Player player) {
 		Comparator<Integer> comparator = getComparator.apply(player);
 		if (comparator.compare(result.score, score) >= 0)
@@ -112,6 +147,12 @@ public class MinimaxServiceImpl implements MinimaxService {
 			return false;
 	}
 
+	/**
+	 * Returns the outcome of the current state of the {@link Board}
+	 * 
+	 * @param board the board
+	 * @return the outcome
+	 */
 	private Outcome getOutcome(Board board) {
 		Cell[][] cells = board.getBoard();
 		Coordinate bound = board.getBounds();
@@ -171,9 +212,29 @@ public class MinimaxServiceImpl implements MinimaxService {
 		return DRAW;
 	}
 
+	/**
+	 * This class holds the result of a particular state
+	 * 
+	 * @author Sujan Kumar Mitra
+	 * @since 2020-10-16
+	 */
 	private class ResultSet {
+		/**
+		 * score is calculated based on this formula:: <br>
+		 * 
+		 * <pre>
+		 * score = (availableMoves+1) * 1 (for {@link Player#MAX}) 
+		 * score = (availableMoves+1) * -1 (for {@link Player#MIN})
+		 * </pre>
+		 */
 		final int score;
+		/**
+		 * the outcome of a state
+		 */
 		final Outcome outcome;
+		/**
+		 * the coordinate
+		 */
 		final Coordinate coordinate;
 
 		public ResultSet(int score, Outcome outcome, Coordinate coordinate) {

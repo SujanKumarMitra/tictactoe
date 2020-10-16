@@ -4,12 +4,20 @@ import org.game.tictactoe.entity.Coordinate;
 import org.game.tictactoe.entity.Outcome;
 
 /**
+ * Implementation of {@link Result}
+ * 
  * @author Sujan Kumar Mitra
  * @since 2020-10-16
  */
 public class ResultImpl implements Result {
 
+	/**
+	 * the outcome
+	 */
 	final Outcome outcome;
+	/**
+	 * the next best position to make a move
+	 */
 	final Coordinate nextBestPosition;
 
 	public ResultImpl(Outcome outcome, Coordinate nextBestPosition) {
