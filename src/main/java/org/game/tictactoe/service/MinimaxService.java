@@ -1,7 +1,6 @@
 package org.game.tictactoe.service;
 
 import org.game.tictactoe.entity.Board;
-import org.game.tictactoe.entity.Coordinate;
 import org.game.tictactoe.entity.Player;
 
 /**
@@ -9,7 +8,7 @@ import org.game.tictactoe.entity.Player;
  * @since 2020-10-15
  */
 public interface MinimaxService {
-	Coordinate getNextBestMove(Board board);
+	Result getNextBestMove(Board board);
 	
-	Coordinate getNextBestMove(Board board, Player player);
+	Result getNextBestMove(Board board, Player player);
 }
