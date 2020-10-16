@@ -1,6 +1,9 @@
 package org.game.tictactoe.entity;
 
 /**
+ * This exception is thrown then an out of bounds position is tried to access in
+ * the {@link Board}
+ * 
  * @author Sujan Kumar Mitra
  * @since 2020-10-15
  */
